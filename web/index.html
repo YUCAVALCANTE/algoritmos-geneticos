@@ -17,6 +17,7 @@
     <nav>
       <a href="#demo">Demo</a>
       <a href="#artigo">Experimentos</a>
+      <a href="https://medium.com/@yucavalcante/algoritmos-gen%C3%A9ticos-quando-uma-m%C3%A1quina-encontra-solu%C3%A7%C3%B5es-que-ningu%C3%A9m-programou-1a6fbd77c3da">Artigo</a>
       <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos#readme">Relatório</a>
       <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos">Código</a>
     </nav>
@@ -26,7 +27,7 @@
     <span class="kicker">IA sem mágica · algoritmos genéticos</span>
     <h1>Carros que ninguém projetou</h1>
     <p>Cada carro abaixo é um cromossomo de 14 números: o formato da carroceria, onde ficam as duas rodas, o tamanho delas e o peso de cada peça. Ninguém programou como um bom carro deve ser, só <b>o que conta como bom</b>: ir longe sem capotar. Seleção, cruzamento e mutação fazem o resto, geração após geração, aqui no seu navegador.</p>
-    <div class="acoes"><a class="btn primary" href="#demo">Ver a evolução</a><a class="btn" href="#artigo">Os experimentos</a></div>
+    <div class="acoes"><a class="btn primary" href="#demo">Ver a evolução</a><a class="btn" href="https://medium.com/@yucavalcante/algoritmos-gen%C3%A9ticos-quando-uma-m%C3%A1quina-encontra-solu%C3%A7%C3%B5es-que-ningu%C3%A9m-programou-1a6fbd77c3da">Ler o artigo no Medium</a><a class="btn" href="#artigo">Os experimentos</a></div>
   </section>
 
   <section id="demo" class="bloco" aria-label="Demonstração">
@@ -113,7 +114,7 @@
       <div class="palco">
         <div class="card">
           <h3>O mecanismo em 30 segundos</h3>
-          <p class="sub">Uma população de palavras aleatórias. Aptidão = quantas letras estão no lugar certo. A cada geração, as melhores palavras são sorteadas por torneio, cruzadas num ponto de corte e sofrem mutação letra a letra. Busca às cegas precisaria, em média, de bilhões de tentativas.</p>
+          <p class="sub">Uma população de palavras aleatórias. Aptidão = quantas letras estão no lugar certo. A cada geração, as melhores palavras são sorteadas por torneio, cruzadas num ponto de corte e sofrem mutação letra a letra. Os valores iniciais são os do artigo: população de 200, mutação de 5%, torneio de 5, semente 42.</p>
           <div class="palavra" id="rPalavra" aria-live="polite"></div>
           <div class="painel">
             <div class="stat"><b id="rGeracao">0</b><span>geração</span></div>
@@ -126,10 +127,10 @@
         <div class="card controles">
           <label class="campo"><span>Palavra-alvo (só letras A–Z)</span><input id="rAlvo" type="text" value="REVOADA" maxlength="24" autocomplete="off" spellcheck="false"></label>
           <label class="grupo faixa"><span>Tamanho da população</span><output id="orTamanho"></output>
-            <input id="rTamanho" type="range" min="20" max="500" step="10" value="150"></label>
+            <input id="rTamanho" type="range" min="20" max="500" step="10" value="200"></label>
           <label class="grupo faixa"><span>Taxa de mutação (por letra)</span><output id="orMutacao"></output>
-            <input id="rMutacao" type="range" min="0" max="0.3" step="0.01" value="0.04"></label>
-          <label class="campo"><span>Semente</span><input id="rSemente" type="number" value="1" min="0" step="1"></label>
+            <input id="rMutacao" type="range" min="0" max="0.3" step="0.01" value="0.05"></label>
+          <label class="campo"><span>Semente</span><input id="rSemente" type="number" value="42" min="0" step="1"></label>
           <div class="acoes"><button class="btn primary" id="rIniciar">Evoluir</button></div>
           <p class="nota">Com mutação zero, a população perde letras que ninguém tinha e pode travar antes do alvo. Com mutação alta demais, o progresso vira ruído.</p>
         </div>
@@ -140,7 +141,7 @@
   <section id="artigo">
     <div class="sec-head">
       <h2>Os pontos do artigo, agora com números</h2>
-      <p>No artigo <i>"Algoritmos genéticos: quando uma máquina encontra soluções que ninguém programou"</i>, da série <i>IA sem mágica</i>, os carros que evoluem numa pista são o exemplo central. Aqui cada argumento do texto vira um experimento reproduzível, rodado em Node com a mesma física desta página. Protocolo completo no <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos#readme">relatório</a>.</p>
+      <p>No artigo <a href="https://medium.com/@yucavalcante/algoritmos-gen%C3%A9ticos-quando-uma-m%C3%A1quina-encontra-solu%C3%A7%C3%B5es-que-ningu%C3%A9m-programou-1a6fbd77c3da">"Algoritmos genéticos: quando uma máquina encontra soluções que ninguém programou"</a>, da série <i>IA sem mágica</i>, os carros que evoluem numa pista são o exemplo central. Aqui cada argumento do texto vira um experimento reproduzível, rodado em Node com a mesma física desta página. Protocolo completo no <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos#readme">relatório</a>.</p>
     </div>
     <div class="ponte" id="achados"><p class="vazio">Carregando resultados…</p></div>
   </section>

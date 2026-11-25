@@ -13,8 +13,8 @@ export function criarPopulacaoTexto(alvo, tamanho, rng) {
   return Array.from({ length: tamanho }, () => Array.from(alvo, () => letra(rng)).join(''));
 }
 
-/** Uma geração: elitismo de 1, torneio de 3, cruzamento de um ponto, mutação por letra. */
-export function proximaGeracaoTexto(pop, alvo, { taxaMutacao = 0.04, torneioK = 3 } = {}, rng) {
+/** Uma geração: elitismo de 1, torneio de 5, cruzamento de um ponto, mutação por letra. */
+export function proximaGeracaoTexto(pop, alvo, { taxaMutacao = 0.05, torneioK = 5 } = {}, rng) {
   const apt = pop.map((s) => aptidaoTexto(s, alvo));
   const nova = [pop[ordenar(apt)[0]]];
   while (nova.length < pop.length) {
