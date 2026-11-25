@@ -12,11 +12,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [20, 22]
+        node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
       - name: Testes (seleção, cruzamento, mutação, determinismo)
         run: npm test
+      - name: Experimentos em modo rápido (fumaça)
+        run: node experimentos/rodar.js --rapido --threads 2
