@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algoritmos genéticos · carros que ninguém projetou</title>
+<meta name="description" content="Algoritmo genético ao vivo no navegador: uma população de carros 2D evolui numa pista, com placar, gráfico de aptidão e diversidade e campeão de cada geração. Experimentos reproduzíveis sobre aptidão mal formulada, convergência prematura, generalização e linhas de base.">
+<meta property="og:title" content="Algoritmos genéticos · carros que ninguém projetou">
+<meta property="og:description" content="Ninguém programou como esses carros devem ser. Só o que conta como bom. Veja a evolução acontecer no navegador.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23007aff'/%3E%3Cpath d='M6 19l5-7 7 1 7 6z' fill='white'/%3E%3Ccircle cx='10' cy='21' r='3.5' fill='white'/%3E%3Ccircle cx='23' cy='21' r='3' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a href="https://yucavalcante.com/">Yury Cavalcante</a>
+    <nav>
+      <a href="#demo">Demo</a>
+      <a href="#artigo">Experimentos</a>
+      <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos#readme">Relatório</a>
+      <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos">Código</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <span class="kicker">IA sem mágica · algoritmos genéticos</span>
+    <h1>Carros que ninguém projetou</h1>
+    <p>Cada carro abaixo é um cromossomo de 14 números: o formato da carroceria, onde ficam as duas rodas, o tamanho delas e o peso de cada peça. Ninguém programou como um bom carro deve ser, só <b>o que conta como bom</b>: ir longe sem capotar. Seleção, cruzamento e mutação fazem o resto, geração após geração, aqui no seu navegador.</p>
+    <div class="acoes"><a class="btn primary" href="#demo">Ver a evolução</a><a class="btn" href="#artigo">Os experimentos</a></div>
+  </section>
+
+  <section id="demo" class="bloco" aria-label="Demonstração">
+    <div class="abas" role="tablist">
+      <button role="tab" id="aba-carros" aria-controls="painel-carros" aria-selected="true">Carros na pista</button>
+      <button role="tab" id="aba-revoada" aria-controls="painel-revoada" aria-selected="false">REVOADA em 30 s</button>
+    </div>
+
+    <div id="painel-carros" role="tabpanel" aria-labelledby="aba-carros" class="bloco">
+      <div class="palco">
+        <div class="card">
+          <div class="tela pista">
+            <canvas id="pista" aria-label="Pista com a geração atual de carros"></canvas>
+            <div class="faixa-topo" aria-hidden="true">
+              <span class="pilula" id="pGeracao">Geração 1</span>
+              <span class="pilula" id="pRodando"></span>
+              <span class="pilula" id="pTempo"></span>
+            </div>
+            <div class="reprise" id="reprise"><span class="pilula" id="repriseTxt"></span><button class="btn" id="voltar">Voltar à evolução</button></div>
+          </div>
+          <div class="painel" aria-live="off">
+            <div class="stat"><b id="vGeracao">1</b><span>geração</span></div>
+            <div class="stat"><b id="vLider">–</b><span>líder nesta geração</span></div>
+            <div class="stat"><b id="vRecorde">–</b><span>melhor aptidão até agora</span></div>
+            <div class="stat"><b id="vDiversidade">–</b><span>diversidade da população (1 = aleatória)</span></div>
+          </div>
+          <p class="nota">Em azul, o carro que está na frente. A linha tracejada marca o recorde das gerações anteriores. A geração termina quando todos param, capotam (na aptidão robusta) ou cruzam a chegada.</p>
+        </div>
+
+        <div class="card controles">
+          <div class="grupo"><span>Aptidão (o que conta como bom)</span>
+            <div class="seg" data-campo="aptidao"><button data-v="robusta" aria-pressed="true">Distância sem capotar</button><button data-v="ingenua" aria-pressed="false">Só distância</button></div>
+          </div>
+          <label class="grupo faixa"><span>Tamanho da população</span><output id="oTamanho"></output>
+            <input id="tamanho" type="range" min="10" max="80" step="2"></label>
+          <label class="grupo faixa"><span>Taxa de mutação (por gene)</span><output id="oMutacao"></output>
+            <input id="mutacao" type="range" min="0" max="0.5" step="0.01"></label>
+          <label class="grupo faixa"><span>Tamanho do torneio</span><output id="oTorneio"></output>
+            <input id="torneio" type="range" min="2" max="8" step="1"></label>
+          <label class="chave">Elitismo (2 melhores passam intactos) <input id="elitismo" type="checkbox"></label>
+          <div class="duas">
+            <label class="campo"><span>Semente</span><input id="semente" type="number" min="0" step="1"></label>
+            <label class="campo"><span>Pista nº</span><input id="nPista" type="number" min="0" step="1"></label>
+          </div>
+          <div class="grupo"><span>Velocidade</span>
+            <div class="seg" data-campo="velocidade"><button data-v="1" aria-pressed="false">1×</button><button data-v="2" aria-pressed="true">2×</button><button data-v="4" aria-pressed="false">4×</button><button data-v="8" aria-pressed="false">8×</button><button data-v="max" aria-pressed="false">Máx.</button></div>
+          </div>
+          <div class="acoes">
+            <button class="btn primary" id="reiniciar">Recomeçar</button>
+            <button class="btn" id="pausar">Pausar</button>
+          </div>
+          <p class="nota">Aptidão, população, semente e pista valem ao recomeçar. Mutação, torneio e elitismo valem a partir da próxima geração. Mesma configuração desde o início, mesma evolução: a simulação é determinística, e o endereço da página guarda a configuração.</p>
+        </div>
+      </div>
+
+      <div class="linha2">
+        <div class="card">
+          <h3>Aptidão por geração</h3>
+          <p class="sub">Melhor carro e média da população, em metros (na aptidão robusta, quem cruza a chegada ganha 1 m por segundo poupado).</p>
+          <div class="grafico"><div class="leg"><span><i style="background:var(--accent)"></i>melhor</span><span><i style="background:#eb6834"></i>média</span></div><div id="gAptidao"></div></div>
+        </div>
+        <div class="card">
+          <h3>Diversidade da população</h3>
+          <p class="sub">Desvio-padrão médio dos 14 genes, relativo a uma população aleatória. Quando cai perto de zero, todos viraram cópias do mesmo carro.</p>
+          <div class="grafico"><div id="gDiversidade"></div></div>
+        </div>
+      </div>
+
+      <div class="linha2">
+        <div class="card">
+          <h3>Placar ao vivo</h3>
+          <p class="sub">Os 8 melhores da geração em andamento.</p>
+          <table class="placar"><thead><tr><th>#</th><th>carro</th><th>distância</th><th>situação</th></tr></thead><tbody id="placar"></tbody></table>
+        </div>
+        <div class="card">
+          <h3>Campeão de cada geração</h3>
+          <p class="sub">Toque num campeão para rever a corrida dele sozinho na pista.</p>
+          <div class="campeoes" id="campeoes"><p class="vazio">O primeiro campeão aparece quando a geração 1 terminar.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="painel-revoada" role="tabpanel" aria-labelledby="aba-revoada" class="bloco" hidden>
+      <div class="palco">
+        <div class="card">
+          <h3>O mecanismo em 30 segundos</h3>
+          <p class="sub">Uma população de palavras aleatórias. Aptidão = quantas letras estão no lugar certo. A cada geração, as melhores palavras são sorteadas por torneio, cruzadas num ponto de corte e sofrem mutação letra a letra. Busca às cegas precisaria, em média, de bilhões de tentativas.</p>
+          <div class="palavra" id="rPalavra" aria-live="polite"></div>
+          <div class="painel">
+            <div class="stat"><b id="rGeracao">0</b><span>geração</span></div>
+            <div class="stat"><b id="rAcertos">–</b><span>letras certas</span></div>
+            <div class="stat"><b id="rAvaliacoes">0</b><span>palavras avaliadas</span></div>
+            <div class="stat"><b id="rCego">–</b><span>tentativas esperadas às cegas</span></div>
+          </div>
+          <ol class="historico-txt" id="rHistorico" style="margin-top:16px"></ol>
+        </div>
+        <div class="card controles">
+          <label class="campo"><span>Palavra-alvo (só letras A–Z)</span><input id="rAlvo" type="text" value="REVOADA" maxlength="24" autocomplete="off" spellcheck="false"></label>
+          <label class="grupo faixa"><span>Tamanho da população</span><output id="orTamanho"></output>
+            <input id="rTamanho" type="range" min="20" max="500" step="10" value="150"></label>
+          <label class="grupo faixa"><span>Taxa de mutação (por letra)</span><output id="orMutacao"></output>
+            <input id="rMutacao" type="range" min="0" max="0.3" step="0.01" value="0.04"></label>
+          <label class="campo"><span>Semente</span><input id="rSemente" type="number" value="1" min="0" step="1"></label>
+          <div class="acoes"><button class="btn primary" id="rIniciar">Evoluir</button></div>
+          <p class="nota">Com mutação zero, a população perde letras que ninguém tinha e pode travar antes do alvo. Com mutação alta demais, o progresso vira ruído.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="artigo">
+    <div class="sec-head">
+      <h2>Os pontos do artigo, agora com números</h2>
+      <p>No artigo <i>"Algoritmos genéticos: quando uma máquina encontra soluções que ninguém programou"</i>, da série <i>IA sem mágica</i>, os carros que evoluem numa pista são o exemplo central. Aqui cada argumento do texto vira um experimento reproduzível, rodado em Node com a mesma física desta página. Protocolo completo no <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos#readme">relatório</a>.</p>
+    </div>
+    <div class="ponte" id="achados"><p class="vazio">Carregando resultados…</p></div>
+  </section>
+
+  <footer>Física: <a href="https://github.com/piqnt/planck.js">planck.js</a> (MIT). Pista, carros e arte são originais e gerados por código. Código sob licença MIT · <a href="https://github.com/YUCAVALCANTE/algoritmos-geneticos">GitHub</a></footer>
+</div>
+<script type="module" src="src/app.js"></script>
+<script type="module" src="src/app-revoada.js"></script>
+<script type="module" src="src/achados.js"></script>
+</body>
+</html>

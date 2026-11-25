@@ -1,0 +1,12 @@
+{
+  "name": "algoritmos-geneticos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Carros que evoluem numa pista 2D: algoritmo genético com física determinística, demo no navegador e experimentos reproduzíveis.",
+  "scripts": {
+    "test": "node --test testes/*.test.js",
+    "experimentos": "node experimentos/rodar.js"
+  },
+  "license": "MIT"
+}
