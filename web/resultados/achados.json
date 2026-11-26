@@ -1,0 +1,30 @@
+[
+  {
+    "titulo": "A aptidão errada cria um carro absurdo",
+    "artigo": "se a aptidão mede só o deslocamento horizontal, um carro \"arremessado\" pode maximizar a métrica sem fazer o que se queria.",
+    "aqui": "com \"só distância\", os campeões foram tão longe quanto os outros (média de 239 m), mas 3 de 5 capotaram logo na largada e seguiram de cabeça para baixo, apoiados numa roda gigante. Medidos por \"distância sem capotar\", fazem 95 m em média, contra 235 m dos evoluídos com a aptidão certa.",
+    "figura": "figuras/1b_trajetorias.png",
+    "alt": "Campeão da aptidão só distância capota no início e anda de cabeça para baixo; o da aptidão robusta anda de pé."
+  },
+  {
+    "titulo": "Pouca mutação, população de clones",
+    "artigo": "mutação baixa demais limita a exploração e a população pode convergir cedo para uma solução ruim; não existe taxa universalmente ideal.",
+    "aqui": "com mutação de 1% por gene, a diversidade cai a 0,04 em 30 gerações (quase clones) e o melhor carro fica em 230 m; com 15%, a diversidade fica em 0,39 e o resultado sobe para 241 m. Com 30%, não melhora mais. O elitismo mudou pouco o resultado final (diferenças dentro da variação entre sementes).",
+    "figura": "figuras/2_convergencia.png",
+    "alt": "Diversidade por geração para quatro taxas de mutação e resultado final com e sem elitismo."
+  },
+  {
+    "titulo": "Bom numa pista, um pouco pior nas outras",
+    "artigo": "uma solução otimizada para um terreno pode falhar em outro; vale avaliar em ambientes que o algoritmo nunca viu.",
+    "aqui": "campeões evoluídos só na pista 1 perdem 6% da distância em 10 pistas novas. Evoluir em 3 pistas ao mesmo tempo, com o mesmo número de gerações, não ajudou aqui: a perda foi de 7%. As pistas vêm do mesmo gerador, então a especialização é pequena; o resultado negativo está no relatório.",
+    "figura": "figuras/3_generalizacao.png",
+    "alt": "Aptidão na pista 1 e média em 10 pistas novas para campeões de uma pista e de três pistas."
+  },
+  {
+    "titulo": "Melhor que as linhas de base, sem mágica",
+    "artigo": "o AG é uma heurística: não garante o ótimo e cada avaliação custa caro.",
+    "aqui": "com as mesmas 1.200 avaliações, o AG chegou a 235 m em média, a busca aleatória a 213 m e o hill climbing a 187 m (ele trava no primeiro carro razoável). Nenhum cruzou a chegada em 1.200 avaliações.",
+    "figura": "figuras/4_linhas_de_base.png",
+    "alt": "Melhor aptidão por número de avaliações para AG, hill climbing e busca aleatória."
+  }
+]

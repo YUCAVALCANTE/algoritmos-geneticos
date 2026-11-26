@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 RAIZ = Path(__file__).resolve().parents[1]
 D = json.loads((RAIZ / "experimentos" / "brutos" / "gif.json").read_text(encoding="utf-8"))
-W, H, SS = 720, 300, 2          # tamanho final e supersampling
+W, H, SS = 640, 266, 2          # tamanho final e supersampling
 ESC = H * SS / 13               # pixels por metro (como na demo)
 CEU, CHAO, BORDA = (242, 242, 247), (199, 199, 204), (142, 142, 147)
 AZUL, CINZA, RODA, TINTA = (0, 122, 255), (99, 99, 102), (58, 58, 60), (28, 28, 30)
@@ -81,7 +81,7 @@ for seg in D["segmentos"]:
         cam[0] += (lider[0] - cam[0]) * 0.15
         cam[1] += (lider[1] - cam[1]) * 0.15
         img, _ = quadro(seg, q, cam)
-        frames.append(img.convert("P", palette=Image.ADAPTIVE, colors=64))
+        frames.append(img.convert("P", palette=Image.ADAPTIVE, colors=24))
     frames.extend([frames[-1]] * 12)
 
 saida = RAIZ / "web" / "figuras" / "evolucao.gif"

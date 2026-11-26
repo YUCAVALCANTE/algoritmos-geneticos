@@ -29,7 +29,7 @@ AZUL, LARANJA, VERDE_AGUA, AMARELO = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
 TINTA, TINTA2, GRADE, CHAO = "#1c1c1e", "#6c6c70", "#e5e5ea", "#d1d1d6"
 
 plt.rcParams.update({
-    "font.family": ["Segoe UI", "Helvetica Neue", "Arial", "DejaVu Sans"],
+    "font.family": ["Segoe UI", "Arial", "DejaVu Sans"],
     "font.size": 10.5, "axes.titlesize": 12, "axes.titleweight": "600", "axes.titlelocation": "left",
     "axes.edgecolor": GRADE, "axes.labelcolor": TINTA2, "xtick.color": TINTA2, "ytick.color": TINTA2,
     "axes.grid": True, "grid.color": GRADE, "grid.linewidth": 0.8, "axes.axisbelow": True,
@@ -62,23 +62,23 @@ def fig_aptidao():
     grupos = [("ingenua", "Treinado com\n“só distância”"), ("robusta", "Treinado com\n“distância sem capotar”")]
     for gi, (chave, rotulo) in enumerate(grupos):
         for k, c in enumerate(e1[chave]):
-            x0 = gi * 2 + (k - 2) * 0.08
+            x0 = gi * 2 + (k - 2) * 0.05
             ax.plot([x0, x0 + 1], [c["ingenua"], c["robusta"]], color=TINTA2, alpha=0.35, lw=1.2, zorder=1)
             ax.scatter([x0], [c["ingenua"]], s=46, color=LARANJA, zorder=3, edgecolor="white", linewidth=1.5)
             ax.scatter([x0 + 1], [c["robusta"]], s=46, color=AZUL, zorder=3, edgecolor="white", linewidth=1.5)
         mi = np.mean([c["ingenua"] for c in e1[chave]])
         mr = np.mean([c["robusta"] for c in e1[chave]])
-        ax.text(gi * 2 + 0.5, -32, rotulo, ha="center", va="top", fontsize=10.5, color=TINTA)
-        ax.text(gi * 2 - 0.25, mi, f"{mi:.0f}", ha="right", va="center", fontsize=10, color=TINTA, fontweight="600")
-        ax.text(gi * 2 + 1.25, mr, f"{mr:.0f}", ha="left", va="center", fontsize=10, color=TINTA, fontweight="600")
+        ax.text(gi * 2 + 0.5, -0.2, rotulo, ha="center", va="top", fontsize=10.5, color=TINTA, transform=ax.get_xaxis_transform())
+        ax.text(gi * 2 - 0.28, mi, f"média\n{mi:.0f}", ha="right", va="center", fontsize=9.5, color=TINTA, fontweight="600")
+        ax.text(gi * 2 + 1.28, mr, f"média\n{mr:.0f}", ha="left", va="center", fontsize=9.5, color=TINTA, fontweight="600")
     ax.set_xticks([0, 1, 2, 3], ["distância\nmáxima", "distância até\ncapotar", "distância\nmáxima", "distância até\ncapotar"])
-    ax.set_xlim(-0.6, 3.6)
-    ax.set_ylim(0, None)
+    ax.set_xlim(-0.8, 3.8)
+    ax.set_ylim(-5, None)
     ax.set_ylabel("metros na pista 1 (mesmo campeão, duas réguas)")
     ax.set_title("O campeão de cada execução medido pelas duas aptidões (5 sementes)")
     ax.scatter([], [], color=LARANJA, label="medido por “só distância”")
     ax.scatter([], [], color=AZUL, label="medido por “distância sem capotar”")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.32), ncol=2)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.36), ncol=2)
     ax.grid(axis="x", visible=False)
     salvar(fig, "1_aptidao_errada.png")
 
@@ -92,17 +92,19 @@ def desenhar_carro(ax, forma, x, y, ang, cor, alfa=1.0):
         ax.add_patch(Circle((x + vx * c - vy * s, y + vx * s + vy * c), rd["raio"], facecolor="#3a3a3c", alpha=alfa, zorder=4))
 
 
+JANELA = 34
+
+
 def fig_trajetoria():
     ex = R["e1"]["exemplo"]
     pts = pista_pontos(1)
-    fig, eixos = plt.subplots(2, 1, figsize=(10, 4.8), sharex=True)
+    fig, eixos = plt.subplots(2, 1, figsize=(10, 5.2), sharex=True)
     for ax, chave, cor, titulo in [
         (eixos[0], "ingenuo", LARANJA, "Campeão evoluído com “só distância”"),
         (eixos[1], "robusto", AZUL, "Campeão evoluído com “distância sem capotar”"),
     ]:
         q = np.array(ex[chave]["quadros"])
-        xmax = q[:, 1].max()
-        xs = np.linspace(0, xmax, 9)
+        xs = np.linspace(0, JANELA - 4, 8)
         idx = [int(np.argmin(np.abs(q[:, 1] - xx))) for xx in xs]
         ax.fill_between(pts[:, 0], pts[:, 1], pts[:, 1].min() - 3, color=CHAO, lw=0)
         ax.plot(pts[:, 0], pts[:, 1], color="#8e8e93", lw=1.2)
@@ -110,20 +112,17 @@ def fig_trajetoria():
             capot = q[i, 4] > 0.5
             desenhar_carro(ax, ex[chave]["forma"], q[i, 1], q[i, 2], q[i, 3], cor, 0.35 if capot else 0.95)
         cap = np.where(q[:, 4] > 0.5)[0]
-        if len(cap):
-            xc = q[cap[0], 1]
-            ax.axvline(xc, color=TINTA2, ls="--", lw=1)
-            ax.text(xc + 2, pts[:, 1].max() + 3, f"capotou aos {xc:.0f} m", color=TINTA, fontsize=9.5, va="top")
-        ax.text(q[-1, 1], q[-1, 2] + 3.2, f"fim: {q[-1, 1]:.0f} m", color=TINTA, fontsize=9.5, ha="center", fontweight="600")
-        ax.set_title(titulo, fontsize=11)
+        fim = q[-1, 1]
+        cap_txt = f"capotou aos {q[cap[0], 1]:.0f} m e seguiu de cabeça para baixo até {fim:.0f} m" if len(cap) else f"nunca capotou; parou aos {fim:.0f} m"
+        ax.set_title(f"{titulo}: {cap_txt}", fontsize=11)
         ax.set_aspect("equal")
-        ax.set_ylim(pts[:, 1].min() - 3, pts[:, 1].max() + 5)
+        janela = pts[(pts[:, 0] >= -3) & (pts[:, 0] <= JANELA)]
+        ax.set_ylim(janela[:, 1].min() - 1.5, janela[:, 1].max() + 4)
         ax.grid(False)
         ax.set_yticks([])
         ax.spines["left"].set_visible(False)
-    eixos[1].set_xlabel("posição na pista (m) · silhuetas a intervalos iguais de distância; translúcidas = já capotado")
-    xm = max(np.array(ex[k]["quadros"])[:, 1].max() for k in ("ingenuo", "robusto"))
-    eixos[1].set_xlim(-3, xm + 12)
+    eixos[1].set_xlabel(f"primeiros {JANELA} m da pista 1 · silhuetas a cada ~4 m; translúcidas = já capotado")
+    eixos[1].set_xlim(-3, JANELA)
     salvar(fig, "1b_trajetorias.png")
 
 
@@ -176,7 +175,7 @@ def fig_generalizacao():
         ax.plot([gi * 2.4, gi * 2.4 + 1], [m1, mt], color=cor, lw=3.2, zorder=4)
         ax.text(gi * 2.4 - 0.12, m1, f"{m1:.0f}", ha="right", va="center", fontweight="600", fontsize=10)
         ax.text(gi * 2.4 + 1.12, mt, f"{mt:.0f}", ha="left", va="center", fontweight="600", fontsize=10)
-        ax.text(gi * 2.4 + 0.5, -26, rot, ha="center", va="top", fontsize=10.5)
+        ax.text(gi * 2.4 + 0.5, -0.2, rot, ha="center", va="top", fontsize=10.5, transform=ax.get_xaxis_transform())
     ax.set_xticks([0, 1, 2.4, 3.4], ["pista 1", "10 pistas\nnovas (média)", "pista 1", "10 pistas\nnovas (média)"])
     ax.set_xlim(-0.6, 4.0)
     ax.set_ylim(0, None)
